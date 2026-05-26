@@ -27,7 +27,7 @@ wire [7:0] data_buffer [0:255];
 
 genvar i;
 generate
-    for (i = 0; i < 255; i = i + 1) begin : SHIFTING_PARALLELY // everything is calculated parallelly in one clk cycle
+    for (i = 0; i < 256; i = i + 1) begin : SHIFTING_PARALLELY // everything is calculated parallelly in one clk cycle
         wire [7:0] current_data = data_in[(i*8) +: 8];
         wire [7:0] raw_shift = current_data + {1'd0, shift};
             
@@ -60,7 +60,7 @@ always @(posedge clk or negedge rst) begin
             end
             
             OPERATE: begin
-                for (j = 0; j < 255; j = j + 1) begin
+                for (j = 0; j < 256; j = j + 1) begin
                     data_out[(j*8) +: 8] = data_buffer[j];
                 end 
                 state <= DONE;
