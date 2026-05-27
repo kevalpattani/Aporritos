@@ -82,9 +82,15 @@ generate
         wire [7:0] current_data = data_in[(l*8) +: 8];
         wire [8:0] raw_num;
         wire [7:0] offset;
-        assign offset = (current_data <= 8'd90) ? 8'd65 : 8'd97;
+        
+        wire is_upper = (current_data >= 8'd65 && current_data <= 8'd90);
+        wire is_lower = (current_data >= 8'd97 && current_data <= 8'd122);
+        wire is_letter = is_upper | is_lower;
+        
+        assign offset = is_upper ? 8'd65 : 8'd97;
         assign raw_num = (current_data - offset) + expanded_key[l];
-        assign data_buffer[l] = (current_data == 8'd0) ? 8'd0 : 
+        
+        assign data_buffer[l] = (!is_letter) ? current_data : // bypass spaces punctuation nulls all covered
                                 (raw_num > 9'd25) ? (raw_num - 9'd26 + offset) : 
                                 (raw_num + offset); 
     end
